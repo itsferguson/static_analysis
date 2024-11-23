@@ -1,0 +1,47 @@
+cabal-version:      2.4
+name:               project
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis:
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+-- license:
+author:             Lukas Hofbauer
+maintainer:         lukas.hofbauer@student.uibk.ac.at
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Abstraction,
+                       Memory,
+                       SignAbstraction,
+                       IntervalAbstraction,
+                       Language
+  build-depends:       base,
+                       containers
+  default-language:    Haskell2010
+
+
+executable project-exe
+  main-is:             Main.hs
+  hs-source-dirs:      src
+  build-depends:       base, containers,project
+  default-language:    Haskell2010
+
+test-suite project-test
+  type:                exitcode-stdio-1.0
+  main-is:             Spec.hs
+  hs-source-dirs:      test
+  build-depends:       base,
+                       project,
+                       hspec
+  other-modules:       SignAbstractionSpec,
+                       IntervalAbstractionSpec,
+                       LanguageSpec
+  default-language:    Haskell2010
