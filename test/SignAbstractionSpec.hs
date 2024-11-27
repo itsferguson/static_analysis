@@ -57,7 +57,7 @@ testAnalyzeExpr = do
   it "analyzes subtraction of positive and negative values" $ do
     let mem = setVariable 'x' Aneg . setVariable 'y' Apos $ initMemory
     analyzeExpr (Ebop Bsub (Evar 'x') (Evar 'y')) mem `shouldBe` Aneg
-    analyzeExpr (Ebop Bsub (Evar 'y') (Evar 'x')) mem `shouldBe` Atop
+    analyzeExpr (Ebop Bsub (Evar 'y') (Evar 'x')) mem `shouldBe` Apos
 
   it "analyzes subtraction with Abot" $ do
     let mem = setVariable 'x' Abot initMemory
@@ -93,21 +93,21 @@ testAnalyzeCommand = do
     getVariable 'y' mem `shouldBe` Aneg
 
   it "analyzes if command with true condition" $ do
-    let cmd = Cseq (Cassign 'x' (Econst 5)) (Cif (Csup, 'x', -5) (Cassign 'y' (Econst 5)) (Cassign 'y' (Econst (-3))))
+    let cmd = Cseq (Cassign 'x' (Econst 5)) (Cif (Rgt, 'x', -5) (Cassign 'y' (Econst 5)) (Cassign 'y' (Econst (-3))))
     let mem = analyzeCommand cmd initMemory
     getVariable 'y' mem `shouldBe` Apos
 
   it "analyzes if command with false condition" $ do
-    let cmd = Cseq (Cassign 'x' (Econst 5)) (Cif (Cinfeq, 'x', -5) (Cassign 'y' (Econst 5)) (Cassign 'y' (Econst (-3))))
+    let cmd = Cseq (Cassign 'x' (Econst 5)) (Cif (Rleq, 'x', -5) (Cassign 'y' (Econst 5)) (Cassign 'y' (Econst (-3))))
     let mem = analyzeCommand cmd initMemory
     getVariable 'y' mem `shouldBe` Aneg
 
   it "analyzes while command" $ do
-    let cmd = Cseq (Cassign 'x' (Econst 5)) (Cwhile (Csup, 'x', -5) (Cassign 'x' (Ebop Bsub (Evar 'x') (Econst 1))))
+    let cmd = Cseq (Cassign 'x' (Econst 5)) (Cwhile (Rgt, 'x', -5) (Cassign 'x' (Ebop Bsub (Evar 'x') (Econst 1))))
     let mem = analyzeCommand cmd initMemory
     getVariable 'x' mem `shouldBe` Aneg
 
   it "analyzes while with false condition" $ do
-    let cmd = Cseq (Cassign 'x' (Econst 5)) (Cwhile (Cinfeq, 'x', -5) (Cassign 'x' (Ebop Bsub (Evar 'x') (Econst 1))))
+    let cmd = Cseq (Cassign 'x' (Econst 5)) (Cwhile (Rleq, 'x', -5) (Cassign 'x' (Ebop Bsub (Evar 'x') (Econst 1))))
     let mem = analyzeCommand cmd initMemory
     getVariable 'x' mem `shouldBe` Apos

@@ -53,7 +53,7 @@ instance Abstraction SignAbstraction where
   bot = Abot
   top = Atop
 
-  filterMemory (Cinfeq, v, n) mem = case (x, compare n 0) of
+  filterMemory (Rleq, v, n) mem = case (x, compare n 0) of
     (Abot, _) -> botMemory mem
     (Azero, LT) -> botMemory mem
     (Azero, _) -> mem
@@ -65,25 +65,27 @@ instance Abstraction SignAbstraction where
     (Aneg, _) -> mem
     where
       x = getVariable v mem
-  filterMemory (Cinfeq, v, n) mem = case (x, compare n 0) of
+  filterMemory (Rgt, v, n) mem = case (x, compare n (-1)) of
     (Abot, _) -> botMemory mem
-    (Azero, LT) -> botMemory mem
+    (Azero, GT) -> botMemory mem
     (Azero, _) -> mem
-    (Apos, LT) -> botMemory mem
-    (Apos, EQ) -> setVariable v Azero mem
-    (Apos, GT) -> mem
-    (Atop, GT) -> mem
-    (Atop, _) -> setVariable v Aneg mem
-    (Aneg, _) -> mem
+    (Aneg, GT) -> botMemory mem
+    (Aneg, EQ) -> setVariable v Azero mem
+    (Aneg, LT) -> mem
+    (Atop, LT) -> mem
+    (Atop, _) -> setVariable v Apos mem
+    (Apos, _) -> mem
     where
       x = getVariable v mem
+  filterMemory (Rle, v, n) mem = filterMemory (Rleq, v, n - 1) mem
+  filterMemory (Rgeq, v, n) mem = filterMemory (Rgt, v, n - 1) mem
 
   unionValue Abot a = a
   unionValue a Abot = a
   unionValue Azero a = a
   unionValue a Azero = a
-  unionValue a b
-    | a == b = a
-    | otherwise = Atop
+  unionValue Apos Apos = Apos
+  unionValue Aneg Aneg = Aneg
+  unionValue _ _ = Atop
 
   widenValue = unionValue

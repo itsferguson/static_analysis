@@ -39,11 +39,11 @@ class (Eq a, Num a) => Abstraction a where
   analyzeCommand (Cseq c1 c2) mem = analyzeCommand c2 (analyzeCommand c1 mem)
   analyzeCommand (Cinput v) mem = setVariable v top mem
   analyzeCommand (Cif b c1 c2) mem =
-    let not_b = invertCondition b
+    let not_b = negateCondition b
         mem1 = analyzeCommand c1 (filterMemory b mem)
         mem2 = analyzeCommand c2 (filterMemory not_b mem)
      in union mem1 mem2
-  analyzeCommand (Cwhile cond c) mem = filterMemory (invertCondition cond) (lfp loop_body mem)
+  analyzeCommand (Cwhile cond c) mem = filterMemory (negateCondition cond) (lfp loop_body mem)
     where
       loop_body mem = analyzeCommand c (filterMemory cond mem)
       lfp f mem =

@@ -48,11 +48,11 @@ testSequence = do
 testIf :: Spec
 testIf = do
   let input = "if x <= 10 { skip; } else { input y;}input x"
-      expected = Cseq (Cif (Cinfeq, 'x', 10) Cskip (Cinput 'y')) (Cinput 'x')
+      expected = Cseq (Cif (Rleq, 'x', 10) Cskip (Cinput 'y')) (Cinput 'x')
       result = reads input :: [(Command, String)]
   it "parses if command" $ result `shouldBe` [(expected, "")]
   let input = "if x <= 10 { skip; } else { input y; input x;}"
-      expected = Cif (Cinfeq, 'x', 10) Cskip (Cseq (Cinput 'y') (Cinput 'x'))
+      expected = Cif (Rleq, 'x', 10) Cskip (Cseq (Cinput 'y') (Cinput 'x'))
       result = reads input :: [(Command, String)]
   it "parses if command" $ result `shouldBe` [(expected, "")]
 
@@ -60,10 +60,10 @@ testIf = do
 testWhile :: Spec
 testWhile = do
   let input = "while x > 0{input y;} input x;"
-      expected = Cseq (Cwhile (Csup, 'x', 0) (Cinput 'y')) (Cinput 'x')
+      expected = Cseq (Cwhile (Rgt, 'x', 0) (Cinput 'y')) (Cinput 'x')
       result = reads input :: [(Command, String)]
   it "parses while command" $ result `shouldBe` [(expected, "")]
   let input = "while x > 0{input y; input x;}"
-      expected = Cwhile (Csup, 'x', 0) (Cseq (Cinput 'y') (Cinput 'x'))
+      expected = Cwhile (Rgt, 'x', 0) (Cseq (Cinput 'y') (Cinput 'x'))
       result = reads input :: [(Command, String)]
   it "parses while command" $ result `shouldBe` [(expected, "")]

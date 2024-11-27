@@ -38,29 +38,29 @@ spec = do
 
     it "analyzes if commands" $ do
       let x = (Interval (Int 6) (Int 10))
-      let mem = analyzeCommand (Cif (Csup, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
+      let mem = analyzeCommand (Cif (Rgt, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
       getVariable 'y' mem `shouldBe` Interval (Int 10) (Int 10)
-      let mem = analyzeCommand (Cif (Cinfeq, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
+      let mem = analyzeCommand (Cif (Rleq, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
       getVariable 'y' mem `shouldBe` Interval (Int 20) (Int 20)
 
     it "analyzes if commands" $ do
       let x = (Interval (Int 0) (Int 5))
-      let mem = analyzeCommand (Cif (Csup, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
+      let mem = analyzeCommand (Cif (Rgt, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
       getVariable 'y' mem `shouldBe` Interval (Int 20) (Int 20)
-      let mem = analyzeCommand (Cif (Cinfeq, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
+      let mem = analyzeCommand (Cif (Rleq, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
       getVariable 'y' mem `shouldBe` Interval (Int 10) (Int 10)
 
     it "analyzes if commands" $ do
       let x = (Interval (Int 0) (Int 10))
-      let mem = analyzeCommand (Cif (Csup, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
+      let mem = analyzeCommand (Cif (Rgt, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
       getVariable 'y' mem `shouldBe` Interval (Int 10) (Int 20)
-      let mem = analyzeCommand (Cif (Cinfeq, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
+      let mem = analyzeCommand (Cif (Rleq, 'x', 5) (Cassign 'y' (Econst 10)) (Cassign 'y' (Econst 20))) (setVariable 'x' x initMemory)
       getVariable 'y' mem `shouldBe` Interval (Int 10) (Int 20)
 
     it "analyzes while commands" $ do
-      let mem = analyzeCommand (Cseq (Cassign 'x' (Econst 5)) (Cwhile (Csup, 'x', 0) (Cassign 'x' (Ebop Bsub (Evar 'x') (Econst 1))))) initMemory
+      let mem = analyzeCommand (Cseq (Cassign 'x' (Econst 5)) (Cwhile (Rgt, 'x', 0) (Cassign 'x' (Ebop Bsub (Evar 'x') (Econst 1))))) initMemory
       getVariable 'x' mem `shouldBe` Interval NegInf (Int 0)
 
     it "analyzes while commands" $ do
-      let mem = analyzeCommand (Cseq (Cassign 'x' (Econst 5)) (Cwhile (Cinfeq, 'x', 0) (Cassign 'x' (Ebop Bsub (Evar 'x') (Econst 1))))) initMemory
+      let mem = analyzeCommand (Cseq (Cassign 'x' (Econst 5)) (Cwhile (Rleq, 'x', 0) (Cassign 'x' (Ebop Bsub (Evar 'x') (Econst 1))))) initMemory
       getVariable 'x' mem `shouldBe` Interval (Int 5) (Int 5)

@@ -32,11 +32,11 @@ instance Pretty Rel where
   pretty Rleq = "<="
   pretty Rgeq = ">="
 
-instance HasNegation Rel where
-  negate Rle = Rgt
-  negate Rgt = Rle
-  negate Rleq = Rgeq
-  negate Rgeq = Rleq
+negateRel :: Rel -> Rel
+negateRel Rleq = Rgt
+negateRel Rgeq = Rle
+negateRel Rle = Rgeq
+negateRel Rgt = Rleq
 
 instance Read Rel where
   readsPrec _ ('<' : '=' : s) = [(Rleq, s)]
@@ -74,6 +74,9 @@ parseExpr str@(c : s)
 parseExpr s = error ("parse error: " ++ s)
 
 type Condition = (Rel, Var, Const)
+
+negateCondition :: Condition -> Condition
+negateCondition (r, v, c) = (negateRel r, v, c)
 
 data Command
   = Cskip
