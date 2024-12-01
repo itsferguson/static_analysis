@@ -20,16 +20,25 @@ cabal build
 ```
 
 ## Usage
-After building the project, you can run the tool with a toy program as input. For example:
+After building the project, you can run the tool with a toy program as input. 
+Example test programs can be found in the `test-programs` directory.
+For example:
 
 ```bash
-cabal run -- <path-to-your-toy-program>
+cabal run -- test-programs/program.txt
 ```
 
 Or the program can be entered directly into the terminal after running the tool with no arguments:
 
 ```bash
 cabal run
+```
+
+## Testing
+To run the test suite, use the following command:
+
+```bash
+cabal test
 ```
 
 The tool will parse the program and output the estimated ranges for each variable.
