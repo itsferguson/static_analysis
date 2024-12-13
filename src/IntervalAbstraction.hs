@@ -87,16 +87,16 @@ instance Abstraction IntervalAbstraction where
 
   filterMemory (Rleq, v, n) mem =
     case getVariable v mem of
-      Ibot -> botMemory mem
+      Ibot -> botMemory
       Interval a b
-        | a > (Int n) -> botMemory mem
+        | a > (Int n) -> botMemory
         | b < (Int n) -> mem
         | otherwise -> setVariable v (Interval a (Int n)) mem
   filterMemory (Rgt, v, n) mem =
     case getVariable v mem of
-      Ibot -> botMemory mem
+      Ibot -> botMemory
       Interval a b
-        | b <= (Int n) -> botMemory mem
+        | b <= (Int n) -> botMemory
         | a > (Int n) -> mem
         | otherwise -> setVariable v (Interval (Int (n + 1)) b) mem
   filterMemory (Rle, v, n) mem = filterMemory (Rleq, v, n - 1) mem

@@ -12,11 +12,10 @@ class (Eq a, Num a) => Abstraction a where
   union :: Memory a -> Memory a -> Memory a
   widenValue :: a -> a -> a
   widen :: Memory a -> Memory a -> Memory a
-  memoryIsBot :: Memory a -> Bool
   analyze :: Command -> Memory a
   analyze cmd = analyzeCommand cmd initMemory
-  botMemory :: Memory a -> Memory a
-  botMemory = Memory.map (const bot)
+  botMemory :: Memory a
+  botMemory = Memory.singletonMemory 'b' bot
   bot :: a
   top :: a
 
@@ -30,10 +29,8 @@ class (Eq a, Num a) => Abstraction a where
           Bsub -> v1 + negate v2
           Bmul -> v1 * v2
 
-  memoryIsBot = elem bot
-
   analyzeCommand _ mem
-    | memoryIsBot mem = mem
+    | Memory.isElement bot mem = botMemory
   analyzeCommand (Cassign v e) mem = setVariable v (analyzeExpr e mem) mem
   analyzeCommand Cskip mem = mem
   analyzeCommand (Cseq c1 c2) mem = analyzeCommand c2 (analyzeCommand c1 mem)
@@ -49,5 +46,11 @@ class (Eq a, Num a) => Abstraction a where
       lfp f mem =
         let r = widen mem (f mem)
          in if r == mem then r else lfp f r
-  union = Memory.unionWith unionValue
-  widen = Memory.unionWith widenValue
+  union mem1 mem2
+    | Memory.isElement bot mem1 = mem2
+    | Memory.isElement bot mem2 = mem1
+    | otherwise = Memory.unionWith unionValue mem1 mem2
+  widen mem1 mem2
+    | Memory.isElement bot mem1 = mem2
+    | Memory.isElement bot mem2 = mem1
+    | otherwise = Memory.unionWith widenValue mem1 mem2

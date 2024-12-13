@@ -54,10 +54,10 @@ instance Abstraction SignAbstraction where
   top = Atop
 
   filterMemory (Rleq, v, n) mem = case (x, compare n 0) of
-    (Abot, _) -> botMemory mem
-    (Azero, LT) -> botMemory mem
+    (Abot, _) -> botMemory
+    (Azero, LT) -> botMemory
     (Azero, _) -> mem
-    (Apos, LT) -> botMemory mem
+    (Apos, LT) -> botMemory
     (Apos, EQ) -> setVariable v Azero mem
     (Apos, GT) -> mem
     (Atop, GT) -> mem
@@ -66,10 +66,10 @@ instance Abstraction SignAbstraction where
     where
       x = getVariable v mem
   filterMemory (Rgt, v, n) mem = case (x, compare n (-1)) of
-    (Abot, _) -> botMemory mem
-    (Azero, GT) -> botMemory mem
+    (Abot, _) -> botMemory
+    (Azero, GT) -> botMemory
     (Azero, _) -> mem
-    (Aneg, GT) -> botMemory mem
+    (Aneg, GT) -> botMemory
     (Aneg, EQ) -> setVariable v Azero mem
     (Aneg, LT) -> mem
     (Atop, LT) -> mem
