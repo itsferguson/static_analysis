@@ -4,6 +4,8 @@ import Data.IntMap (member)
 import Language
 import Memory
 
+num_unions = 1
+
 class (Eq a, Num a) => Abstraction a where
   analyzeExpr :: Expr -> Memory a -> a
   analyzeCommand :: Command -> Memory a -> Memory a
@@ -40,12 +42,14 @@ class (Eq a, Num a) => Abstraction a where
         mem1 = analyzeCommand c1 (filterMemory b mem)
         mem2 = analyzeCommand c2 (filterMemory not_b mem)
      in union mem1 mem2
-  analyzeCommand (Cwhile cond c) mem = filterMemory (negateCondition cond) (lfp loop_body mem)
+  analyzeCommand (Cwhile cond c) mem = filterMemory (negateCondition cond) (unroll_loop num_unions mem)
     where
       loop_body mem = analyzeCommand c (filterMemory cond mem)
-      lfp f mem =
-        let r = widen mem (f mem)
-         in if r == mem then r else lfp f r
+      unroll_loop 0 mem = (lfp loop_body mem)
+      unroll_loop n mem = union mem (unroll_loop (n - 1) (loop_body mem))
+      lfp f mem = if r == mem then r else lfp f r
+        where
+          r = widen mem (f mem)
   union mem1 mem2
     | Memory.isElement bot mem1 = mem2
     | Memory.isElement bot mem2 = mem1
