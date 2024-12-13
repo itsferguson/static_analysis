@@ -1,6 +1,7 @@
 module Main where
 
 import Abstraction
+import ConstantSetAbstraction
 import IntervalAbstraction
 import Language
 import Memory
@@ -30,6 +31,8 @@ analyzeProgram args = do
   putStrLn $ "Sign Analysis: " ++ show signAnalysis
   let intervalAnalysis = analyze cmd :: Memory IntervalAbstraction
   putStrLn $ "Interval Analysis: " ++ show intervalAnalysis
+  let constantAnalysis = analyze cmd :: Memory SetAbstraction
+  putStrLn $ "Constant Analysis: " ++ show constantAnalysis
 
 getProgram :: [String] -> IO String
 getProgram args = do

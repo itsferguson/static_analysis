@@ -21,6 +21,7 @@ library
   exposed-modules:     Abstraction,
                        Memory,
                        SignAbstraction,
+                       ConstantSetAbstraction,
                        IntervalAbstraction,
                        Language
   build-depends:       base,
